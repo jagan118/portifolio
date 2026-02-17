@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Portfolio (Multi Page)</title>
+
+    <style>
+        /* ========== 1) RESET ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        /* ========== 2) BODY ========== */
+        body {
+            background: #f6f7fb;
+            color: #222;
+            transition: 0.3s;
+        }
+
+        /* ========== 3) HEADER ========== */
+        header {
+            padding: 25px 15px;
+            text-align: center;
+            color: white;
+            background: linear-gradient(to right, #2563eb, #7c3aed, #ec4899);
+        }
+
+        header h1 {
+            font-size: 28px;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        /* ========== 4) NAV BAR ========== */
+        nav {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        nav button {
+            background: rgba(255, 255, 255, 0.92);
+            color: #111;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.25s;
+        }
+
+        nav button:hover {
+            transform: translateY(-2px);
+            background: white;
+        }
+
+        nav button.active {
+            background: #22c55e;
+            color: black;
+            box-shadow: 0 6px 14px rgba(34, 197, 94, 0.35);
+        }
+
+        /* ========== 5) MAIN CONTAINER ========== */
+        .container {
+            width: 92%;
+            max-width: 1000px;
+            margin: 22px auto;
+            padding: 10px;
+        }
+
+        /* ========== 6) PAGES ========== */
+        .page {
+            display: none;
+            animation: fade 0.35s ease-in-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fade {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0px);
+            }
+        }
+
+        h2 {
+            margin-bottom: 16px;
+            font-size: 22px;
+            color: #111;
+        }
+
+        /* ========== 7) CARDS GRID ========== */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 16px;
+        }
+
+        .card {
+            background: white;
+            padding: 18px;
+            border-radius: 16px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.07);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            transition: 0.25s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 14px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .card h3 {
+            margin-bottom: 8px;
+            font-size: 16px;
+            color: #2563eb;
+        }
+
+        .card p {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #444;
+        }
+
+        /* ========== 8) BUTTONS ========== */
+        .btn {
+            display: inline-block;
+            padding: 12px 16px;
+            background: linear-gradient(to right, #22c55e, #38bdf8);
+            color: #0f172a;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 14px;
+            font-weight: bold;
+            transition: 0.25s;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        /* Dark mode button */
+        .darkBtn {
+            margin-left: 8px;
+            background: linear-gradient(to right, #f59e0b, #ef4444);
+            color: white;
+        }
+
+        /* ========== 9) FOOTER ========== */
+        footer {
+            text-align: center;
+            padding: 15px;
+            background: #0f172a;
+            color: white;
+            margin-top: 30px;
+            font-size: 14px;
+        }
+
+        .note {
+            margin-top: 10px;
+            color: #555;
+            font-size: 14px;
+        }
+
+        /* ========== 10) DARK MODE ========== */
+        body.dark {
+            background: #0b1220;
+            color: white;
+        }
+
+        body.dark h2 {
+            color: #fff;
+        }
+
+        body.dark .card {
+            background: #111827;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        body.dark .card p {
+            color: #cbd5e1;
+        }
+
+        body.dark footer {
+            background: #111827;
+        }
+
+        
+        table {
+            width:92%;
+            border-collapse: collapse;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            padding: 8px;
+        }
+
+        th {
+            cursor: pointer;
+            background-color: #ddd;
+        }
+
+        th:hover {
+            background-color: #bbb;
+        }
+
+        td:hover {
+            background-color: rgb(64, 73, 83);
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header>
+        <h1 id="studentName">JACK</h1>
+        <p id="studentRole">Student | Web Developer</p>
+
+        <nav>
+            <button class="navBtn active" onclick="showPage('home', this)">Home</button>
+            <button class="navBtn" onclick="showPage('about', this)">About</button>
+            <button class="navBtn" onclick="showPage('skills', this)">Skills</button>
+            <button class="navBtn" onclick="showPage('projects', this)">Projects</button>
+            <button class="navBtn" onclick="showPage('contact', this)">Contact</button>
+        </nav>
+    </header>
+
+    <div class="container">
+
+        <!-- HOME PAGE -->
+        <section id="home" class="page active">
+            <h2>Welcome 👋</h2>
+
+            <div class="cards">
+                <div class="card">
+                    <h3>Who am I?</h3>
+                    <p>
+                        I am a student learning web development and I enjoy building modern websites.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>What I’m Learning</h3>
+                    <p>
+                        HTML, CSS, JavaScript and backend basics like databases and CRUD operations.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>My Goal</h3>
+                    <p>
+                        To become a full stack developer and work on real-world projects.
+                    </p>
+                </div>
+            </div>
+
+            <button class="btn" onclick="editDetails()">✏️ Edit Profile</button>
+            <button class="btn darkBtn" onclick="toggleDark()">🌙 Dark Mode</button>
+
+            <p class="note">Tip: Click buttons to switch pages ✅</p>
+        </section>
+
+        <!-- ABOUT PAGE -->
+        <section id="about" class="page">
+            <h2>About Me 📌</h2>
+
+            <div class="cards">
+                <div class="card">
+                    <h3>Introduction</h3>
+                    <p>
+                        Hi! I’m Ganesh Babu. I love technology and I enjoy learning new skills every day.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>Education</h3>
+                    <p>
+                        I am currently studying and improving my skills in coding and problem solving.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>Strengths</h3>
+                    <p>
+                        Hard work, consistency, discipline, and strong interest in learning development.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>Hobbies</h3>
+                    <p>
+                        Coding, exploring new tools, learning from videos, and building mini projects.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SKILLS PAGE -->
+        <section id="skills" class="page">
+            <h2>Skills 💡</h2>
+
+            <div class="cards">
+                <div class="card">
+                    <h3>HTML</h3>
+                    <p>Good understanding of tags, forms, and webpage structure.</p>
+                </div>
+
+                <div class="card">
+                    <h3>CSS</h3>
+                    <p>Card design, layouts, flexbox/grid, and responsive styling.</p>
+                </div>
+
+                <div class="card">
+                    <h3>JavaScript</h3>
+                    <p>DOM basics, events, functions, and simple page interactions.</p>
+                </div>
+
+                <div class="card">
+                    <h3>Tools</h3>
+                    <p>VS Code, GitHub, Browser DevTools, and XAMPP basics.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJECTS PAGE -->
+        <!-- <section id="projects" class="page">
+      <h2>Projects 🚀</h2>
+
+      <div class="cards">
+        <div class="card">
+          <h3>To-Do List</h3>
+          <p>A task manager with add and delete feature using JavaScript.</p>
+        </div>
+
+        <div class="card">
+          <h3>Calculator</h3>
+          <p>A basic calculator for +, -, ×, ÷ operations.</p>
+        </div>
+
+        <div class="card">
+          <h3>Portfolio Website</h3>
+          <p>A multi-section portfolio website built using HTML, CSS and JS.</p>
+        </div>
+
+        <div class="card">
+          <h3>Login + Signup</h3>
+          <p>A basic login signup UI (future plan: connect with database).</p>
+        </div>
+      </div>
+    </section> -->
+        <!-- project page -->
+
+     <section id="projects" class="page">
+           <table width="500px">
+            <thead>
+                <th>Project Name</th>
+                <th>Description</th>
+                <th>Live link</td>
+                <th>Source Link</th>
+            </thead>
+
+            <tbody id="table">
+                <tr>
+                    <td>To-Do List</td>
+                    <td>A task manager with add and delete feature using JavaScript.</td>
+                    <td><a href="https://ganeshbabu2003.github.io/To-Do-List/">Live Link</a></td>
+                    <td><a href="https://github.com/ganeshbabu2003/To-Do-List">Source Link</a></td>
+                </tr>
+                <tr>
+                    <td>library Book</td>
+                    <td>A task manager with add and delete feature using JavaScript.</td>
+                    <td><a href="https://ganeshbabu2003.github.io/library-book/">Live Link</a></td>
+                    <td><a href="https://github.com/ganeshbabu2003/library-book">Source Link</a></td>
+                </tr>
+            </tbody>
+        </table>
+     </section>
+
+        <!-- CONTACT PAGE -->
+        <section id="contact" class="page">
+            <h2>Contact 📞</h2>
+
+            <div class="cards">
+                <div class="card">
+                    <h3>Email</h3>
+                    <p id="emailText">jagan@gmail.com</p>
+                </div>
+
+                <div class="card">
+                    <h3>Phone</h3>
+                    <p id="phoneText">+91 XXXXX XXXXX</p>
+                </div>
+
+                <div class="card">
+                    <h3>LinkedIn</h3>
+                    <p id="linkedinText">linkedin.com/in/yourprofile</p>
+                </div>
+
+                <div class="card">
+                    <h3>Message</h3>
+                    <p id="messageText">Click below to send a greeting 😊</p>
+                    <button class="btn" onclick="sayHello()">Say Hello</button>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>© 2026 Student Portfolio | Made with ❤️</p>
+    </footer>
+
+    <script>
+        /* ==========================
+           1) Page Switching Function
+        =========================== */
+        function showPage(pageId, btn) {
+            let pages = document.querySelectorAll(".page");
+            pages.forEach(page => page.classList.remove("active"));
+
+            document.getElementById(pageId).classList.add("active");
+
+            let buttons = document.querySelectorAll(".navBtn");
+            buttons.forEach(b => b.classList.remove("active"));
+
+            btn.classList.add("active");
+        }
+
+        /* ==========================
+           2) Say Hello Function
+        =========================== */
+        function sayHello() {
+            document.getElementById("messageText").innerText =
+                "Thank you for visiting my portfolio 😄 Have a great day!";
+        }
+
+        /* ==========================
+           3) Edit Profile Function
+        =========================== */
+        function editDetails() {
+            let name = prompt("Enter your name:");
+            let role = prompt("Enter your role (example: Student | Web Developer):");
+            let email = prompt("Enter your email:");
+            let phone = prompt("Enter your phone number:");
+            let linkedin = prompt("Enter your LinkedIn profile link (text):");
+
+            if (name && name.trim() !== "") {
+                document.getElementById("studentName").innerText = name;
+            }
+            if (role && role.trim() !== "") {
+                document.getElementById("studentRole").innerText = role;
+            }
+            if (email && email.trim() !== "") {
+                document.getElementById("emailText").innerText = email;
+            }
+            if (phone && phone.trim() !== "") {
+                document.getElementById("phoneText").innerText = phone;
+            }
+            if (linkedin && linkedin.trim() !== "") {
+                document.getElementById("linkedinText").innerText = linkedin;
+            }
+        }
+
+        /* ==========================
+           4) Dark Mode Function
+        =========================== */
+        function toggleDark() {
+            document.body.classList.toggle("dark");
+        }
+        
+        
+    </script>
+
+</body>
+
+</html>
