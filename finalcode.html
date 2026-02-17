@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management</title>
+
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        table {
+            width: 90vw;
+            border-collapse: collapse;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            padding: 8px;
+        }
+
+        th {
+            cursor: pointer;
+            background-color: #ddd;
+        }
+
+        th:hover {
+            background-color: #bbb;
+        }
+
+        td:hover {
+            background-color: rgb(64, 73, 83);
+            color: white;
+        }
+
+        input {
+            width: 400px;
+            height: 35px;
+            border-radius: 8px;
+            background-color: beige;
+            border: none;
+            padding: 5px;
+        }
+
+        input:hover {
+            box-shadow: 0 0 5px gray;
+        }
+
+        button {
+            width: 100px;
+            height: 35px;
+            border-radius: 20px;
+            background-color: rgb(161, 155, 109);
+            margin: 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: rgb(130, 125, 90);
+        }
+
+        #pagination {
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>Search For a Book:</h2>
+
+    <div>
+        <input type="text" id="searchedbook" placeholder="Enter Book Name">
+        <button onclick="searchbtn()">Search</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th onclick="sortBy('title')">Book Title</th>
+                <th onclick="sortBy('authors')">Authors</th>
+                <th onclick="sortBy('status')">Status</th>
+                <th onclick="sortBy('categories')">Categories</th>
+            </tr>
+        </thead>
+        <tbody id="table"></tbody>
+    </table>
+
+    <div id="pagination">
+        <button onclick="pre()">Prev</button>
+        <button onclick="nxt()">Next</button>
+    </div>
+    <script src="books.js"></script>
+    <script>
+        /* ---------- SAMPLE BOOK DATA ---------- */
+        /* Replace this with your books.js if needed */
+        var books;
+        // // const books = [
+        //     {title:"Java Basics", authors:"James", status:"Available", categories:"Programming"},
+        //     {title:"Python Guide", authors:"Guido", status:"Borrowed", categories:"Programming"},
+        //     {title:"C++ Mastery", authors:"Bjarne", status:"Available", categories:"Programming"},
+        //     {title:"Data Structures", authors:"Mark", status:"Available", categories:"CS"},
+        //     {title:"Algorithms", authors:"Thomas", status:"Borrowed", categories:"CS"},
+        //     {title:"DBMS", authors:"Navathe", status:"Available", categories:"Database"},
+        //     {title:"Operating System", authors:"Galvin", status:"Available", categories:"CS"},
+        //     {title:"Computer Networks", authors:"Tanenbaum", status:"Borrowed", categories:"Networking"},
+        //     {title:"HTML & CSS", authors:"John", status:"Available", categories:"Web"},
+        //     {title:"JavaScript", authors:"Brendan", status:"Available", categories:"Web"},
+        //     {title:"React Guide", authors:"Dan", status:"Available", categories:"Web"},
+        //     {title:"Machine Learning", authors:"Andrew", status:"Borrowed", categories:"AI"}
+        // ];
+
+        /* ---------- GLOBAL VARIABLES ---------- */
+
+        let rows = 10;
+        let cp = 1;
+        let filteredBooks = [...books];
+        let currentSortColumn = null;
+        let sortDirection = "asc";
+
+        /* ---------- DISPLAY FUNCTION ---------- */
+
+        function displaytable() {
+
+            let st = (cp - 1) * rows;
+            let end = st + rows;
+            let pageData = filteredBooks.slice(st, end);
+
+            const tableBody = document.getElementById("table");
+            tableBody.innerHTML = "";
+
+            if (pageData.length === 0) {
+                tableBody.innerHTML =
+                    "<tr><td colspan='4'>No Books Found</td></tr>";
+                return;
+            }
+
+            pageData.forEach(book => {
+                let row = document.createElement("tr");
+                row.innerHTML = `
+            <td>${book.title}</td>
+            <td>${book.authors}</td>
+            <td>${book.status}</td>
+            <td>${book.categories}</td>
+        `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        /* ---------- SEARCH ---------- */
+
+        function searchbtn() {
+            let find = document.getElementById("searchedbook")
+                .value
+                .toLowerCase();
+
+            filteredBooks = books.filter(book =>
+                book.title.toLowerCase().includes(find) ||
+                book.authors.toLowerCase().includes(find)
+            );
+
+            cp = 1;
+            displaytable();
+        }
+
+        /* ---------- SORT ---------- */
+
+        function sortBy(column) {
+
+            if (currentSortColumn === column) {
+                sortDirection = sortDirection === "asc" ? "desc" : "asc";
+            } else {
+                sortDirection = "desc";
+            }
+
+            currentSortColumn = column;
+
+            let st = (cp - 1) * rows;
+            let end = st + rows;
+            let pageData = filteredBooks.slice(st, end);
+            
+            pageData.sort((a, b) => {
+
+                let valA = a[column].toLowerCase();
+                let valB = b[column].toLowerCase();
+
+                if (valA < valB) return sortDirection === "asc" ? -1 : 1;
+                if (valA > valB) return sortDirection === "desc" ? 1 : -1;
+                return 0;
+            });
+
+            cp = 1;
+            displaytable();
+        }
+
+        /* ---------- PAGINATION ---------- */
+
+        function nxt() {
+            if (cp * rows < filteredBooks.length) {
+                cp++;
+                displaytable();
+            }
+        }
+
+        function pre() {
+            if (cp > 1) {
+                cp--;
+                displaytable();
+            }
+        }
+
+        /* ---------- INITIAL LOAD ---------- */
+
+        displaytable();
+
+    </script>
+</body>
+
+</html>
